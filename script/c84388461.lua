@@ -5,16 +5,14 @@ local s,id=GetID()
 function s.initial_effect(c)
 	local rparams= {handler=c,
 					lvtype=RITPROC_EQUAL,
+					filter=aux.FilterBoolFunction(Card.IsSetCard,SET_NEKROZ),
 					desc=aux.Stringid(id,1),
 					forcedselection=function(e,tp,g,sc)return g:IsContains(e:GetHandler()) end}
 	local rittg,ritop=Ritual.Target(rparams),Ritual.Operation(rparams)
 	--pendulum summon
 	Pendulum.AddProcedure(c)
 	--Ritual Summon
-	local e1=Ritual.CreateProc({handler=c,
-								lvtype=RITPROC_EQUAL,
-								desc=aux.Stringid(id,1),
-								forcedselection=function(e,tp,g,sc)return g:IsContains(e:GetHandler()) end})
+	local e1=Ritual.CreateProc(rparams)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_MZONE+LOCATION_HAND)
 	e1:SetCountLimit(1,{id,0})
@@ -26,7 +24,9 @@ function s.initial_effect(c)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetCountLimit(1,{id,0})
 	e2:SetCondition(s.condition)
-	e2:SetOperation(s.operation(rittg,ritop))
+	-- e2:SetTarget(s.target(rittg))
+	e2:SetTarget(Ritual.Target(rparams))
+	e2:SetOperation(Ritual.Operation(rparams))
 	c:RegisterEffect(e2,false,CUSTOM_REGISTER_ZEFRA)
 	--splimit
 	local e3=Effect.CreateEffect(c)
@@ -51,9 +51,14 @@ end
 function s.condition(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_PENDULUM)
 end
+function s.target(rittg)
+	return function(e,tp,eg,ep,ev,re,r,rp)
+		Debug.Message(rittg(e,tp,eg,ep,ev,re,r,rp,0))
+		return rittg(e,tp,eg,ep,ev,re,r,rp,0)
+	end
+end
 function s.operation(rittg,ritop)
 	return function(e,tp,eg,ep,ev,re,r,rp)
-		local rit=rittg(e,tp,eg,ep,ev,re,r,rp,0)
 		local c=e:GetHandler()
 		if not e:GetHandler():IsRelateToEffect(e) then return end
 		if rittg(e,tp,eg,ep,ev,re,r,rp,0) then
