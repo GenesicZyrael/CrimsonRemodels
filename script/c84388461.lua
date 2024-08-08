@@ -4,7 +4,7 @@
 local s,id=GetID()
 function s.initial_effect(c)
 	local rparams= {handler=c,
-					lvtype=RITPROC_EQUAL,
+					lvtype=RITPROC_GREATER,
 					filter=aux.FilterBoolFunction(Card.IsSetCard,SET_NEKROZ),
 					desc=aux.Stringid(id,1),
 					forcedselection=function(e,tp,g,sc)return g:IsContains(e:GetHandler()) end}
