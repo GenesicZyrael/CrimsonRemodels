@@ -39,7 +39,7 @@ function s.condition(e,tp,eg,ep,ev,re,r,rp)
 		or re and ( re:GetHandler():IsSetCard(SET_RITUAL_BEAST) or re:GetHandler():IsSetCard(SET_ZEFRA) )
 end
 function s.filter(c)
-	return c:IsFaceup() and c:IsSetCard(SET_ZEFRA) and c:IsType(TYPE_PENDULUM) and not c:IsCode(id) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsSetCard(SET_ZEFRA) and not c:IsCode(id) and c:IsAbleToHand()
 end
 function s.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(s.filter,tp,LOCATION_EXTRA|LOCATION_REMOVED,0,1,nil) end
